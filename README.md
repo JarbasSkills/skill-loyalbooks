@@ -6,6 +6,8 @@ LoyalBooks skill for OCP
 
 search www.loyalbooks.com by voice!
 
+![](./gui.png)
+
 ## Examples
 
 * "read lovecraft"
