@@ -4,7 +4,7 @@ from audiobooker.scrappers.loyalbooks import LoyalBooks
 from ovos_plugin_common_play.ocp import MediaType, PlaybackType
 from ovos_utils.parse import fuzzy_match, MatchStrategy
 from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill, \
-    ocp_search
+    ocp_search, ocp_featured_media
 
 
 class LoyalBooksSkill(OVOSCommonPlaybackSkill):
@@ -24,6 +24,11 @@ class LoyalBooksSkill(OVOSCommonPlaybackSkill):
         return min(100, score)
 
     # common play
+    @ocp_featured_media()
+    def featured_media(self):
+        for book in LoyalBooks.scrap_popular():
+            yield self._book2ocp(book)
+
     @ocp_search()
     def search_loyalbooks(self, phrase, media_type):
         # match the request media_type
@@ -60,7 +65,7 @@ class LoyalBooksSkill(OVOSCommonPlaybackSkill):
                                     base_score=base_score)
             yield self._book2ocp(book, score)
 
-    def _book2ocp(self, book, score):
+    def _book2ocp(self, book, score=50):
         author = ", ".join([au.first_name + au.last_name for au in
                             book.authors])
         pl = [{
